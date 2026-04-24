@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Instagram Nakrutka | Simulyatsiya</title>
+  <!-- Google Fonts & Font Awesome 6 -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(145deg, #0f0c1f 0%, #1a1a2f 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem;
+      position: relative;
+    }
+
+    /* Particle effect (subtle animated background) */
+    body::before {
+      content: '';
+      position: fixed;
+      width: 200%;
+      height: 200%;
+      top: -50%;
+      left: -50%;
+      background: radial-gradient(circle at 30% 40%, rgba(225, 48, 108, 0.08) 0%, rgba(0, 0, 0, 0) 70%);
+      animation: drift 40s infinite alternate;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes drift {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      100% { transform: translate(6%, 4%) rotate(2deg); }
+    }
+
+    .glass-card {
+      background: rgba(20, 18, 38, 0.75);
+      backdrop-filter: blur(12px);
+      border-radius: 2.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.5), 0 0 0 0.5px rgba(255, 255, 255, 0.05) inset;
+      width: 100%;
+      max-width: 580px;
+      transition: all 0.2s ease;
+      z-index: 2;
+    }
+
+    .card-inner {
+      padding: 2rem 1.8rem 2.2rem;
+    }
+
+    .badge-icon {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(225, 48, 108, 0.2);
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #ff9ebb;
+      letter-spacing: 0.3px;
+      border: 0.5px solid rgba(225, 48, 108, 0.4);
+      margin-bottom: 1.2rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #FFF 30%, #f0a6c0 80%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.3px;
+      margin-bottom: 0.5rem;
+    }
+
+    .sub {
+      color: #a8a9c4;
+      font-size: 0.85rem;
+      border-left: 3px solid #e1306c;
+      padding-left: 12px;
+      margin: 0.6rem 0 1.2rem 0;
+      font-weight: 400;
+    }
+
+    .demo-warning {
+      background: rgba(255, 190, 11, 0.12);
+      border-radius: 1rem;
+      padding: 0.7rem 1rem;
+      font-size: 0.75rem;
+      color: #ffcd7e;
+      margin-bottom: 1.8rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 0.5px solid rgba(255, 200, 80, 0.3);
+    }
+
+    .demo-warning i {
+      font-size: 1rem;
+      color: #ffbb44;
+    }
+
+    /* form styles */
+    .form-group {
+      margin-bottom: 1.6rem;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #ccccee;
+      margin-bottom: 10px;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 14px 18px;
+      background: rgba(12, 10, 26, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 1.4rem;
+      font-size: 1rem;
+      color: white;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    select:focus, input:focus {
+      border-color: #e1306c;
+      box-shadow: 0 0 0 3px rgba(225, 48, 108, 0.3);
+      background: #0f0d1e;
+    }
+
+    .quantity-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .quantity-row input {
+      flex: 2;
+    }
+
+    .range-hint {
+      font-size: 0.7rem;
+      color: #8f8fb3;
+      margin-top: 6px;
+      margin-left: 8px;
+    }
+
+    button {
+      width: 100%;
+      background: linear-gradient(95deg, #e1306c 0%, #c72a5f 100%);
+      border: none;
+      padding: 15px 0;
+      border-radius: 2rem;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin-top: 10px;
+      box-shadow: 0 8px 18px rgba(225, 48, 108, 0.3);
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      transform: none;
+      cursor: not-allowed;
+      filter: saturate(0.8);
+    }
+
+    .result-area {
+      margin-top: 2rem;
+      background: rgba(0, 0, 0, 0.35);
+      border-radius: 1.5rem;
+      padding: 1.2rem;
+      border-left: 3px solid #e1306c;
+      transition: all 0.2s;
+    }
+
+    .order-details {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .order-id {
+      font-family: monospace;
+      font-weight: 700;
+      font-size: 1rem;
+      color: #ffb7cf;
+    }
+
+    .status-msg {
+      font-size: 0.9rem;
+      color: #cdcdee;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .footer-note {
+      margin-top: 1.8rem;
+      text-align: center;
+      font-size: 0.7rem;
+      color: #6f6f92;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .footer-note i {
+      font-size: 0.7rem;
+    }
+
+    .fake-counter {
+      background: rgba(0,0,0,0.3);
+      border-radius: 2rem;
+      padding: 6px 12px;
+      font-size: 0.7rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    hr {
+      margin: 16px 0;
+      border-color: rgba(255,255,255,0.05);
+    }
+
+    @media (max-width: 500px) {
+      .card-inner {
+        padding: 1.5rem;
+      }
+      h1 {
+        font-size: 1.65rem;
+      }
+    }
+
+    input::placeholder {
+      color: #5f5f89;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+<div class="glass-card">
+  <div class="card-inner">
+    <div class="badge-icon">
+      <i class="fab fa-instagram"></i> 
+      <span>⚡ NAKRUTKA SIMULYATORI</span>
+    </div>
+    <h1><i class="fab fa-instagram" style="font-size: 1.8rem; margin-right: 6px;"></i> Boost <span style="background: linear-gradient(120deg, #fdc6d4, #f55f8d); -webkit-background-clip:text; background-clip:text; color:transparent;">Pro</span></h1>
+    <div class="sub">
+      Instagram akkaunt & postlar uchun real vaqt rejimida kuchaytirish (demo)
+    </div>
+    <div class="demo-warning">
+      <i class="fas fa-shield-alt"></i>
+      <span>📢 Faqat ta'limiy va ko'rgazmali maqsadda. Hech qanday real Instagram hisoblariga ta'sir ko'rsatilmaydi.</span>
+    </div>
+
+    <form id="boostForm">
+      <!-- Xizmat turi -->
+      <div class="form-group">
+        <label><i class="fas fa-chart-line"></i> Xizmat turi</label>
+        <select id="serviceType">
+          <option value="followers">👥 Followerlar (obunachilar)</option>
+          <option value="likes">❤️ Like’lar (post uchun)</option>
+          <option value="views">👁️ Ko‘rishlar (story/post)</option>
+        </select>
+      </div>
+
+      <!-- Dinamik input (username yoki post link) -->
+      <div class="form-group">
+        <label id="targetLabel"><i class="fab fa-instagram"></i> Instagram username</label>
+        <input type="text" id="targetInput" placeholder="@username yoki profil nomi" autocomplete="off">
+        <div class="range-hint" id="targetHint">Misol: @tech_boost yoki username</div>
+      </div>
+
+      <!-- Miqdor -->
+      <div class="form-group">
+        <label><i class="fas fa-hashtag"></i> Nakrutka miqdori</label>
+        <div class="quantity-row">
+          <input type="number" id="quantityInput" min="50" max="10000" value="500" step="10">
+        </div>
+        <div class="range-hint" id="quantityHint">Min 50 | Maks 10000 (followerlar uchun)</div>
+      </div>
+
+      <button type="submit" id="submitBtn">
+        <i class="fas fa-bolt"></i> NAKRUTKA BOSHLASH
+      </button>
+    </form>
+
+    <div class="result-area" id="resultArea" style="display: none;">
+      <div class="order-details" id="orderDetails">
+        <!-- dinamik -->
+      </div>
+    </div>
+
+    <hr>
+    <div class="footer-note">
+      <span><i class="fas fa-code"></i> HTML · CSS · JS</span>
+      <span><i class="fas fa-microchip"></i> C++ backend arxitekturasi qo‘llab-quvvatlanadi</span>
+      <span class="fake-counter"><i class="fas fa-chart-simple"></i> <span id="fakeOrdersCount">0</span> ta sinov buyurtma</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // ---------- UI ELEMENTS ----------
+    const serviceSelect = document.getElementById('serviceType');
+    const targetLabel = document.getElementById('targetLabel');
+    const targetInput = document.getElementById('targetInput');
+    const targetHint = document.getElementById('targetHint');
+    const quantityInput = document.getElementById('quantityInput');
+    const quantityHint = document.getElementById('quantityHint');
+    const submitBtn = document.getElementById('submitBtn');
+    const resultArea = document.getElementById('resultArea');
+    const orderDetailsSpan = document.getElementById('orderDetails');
+    const fakeOrdersSpan = document.getElementById('fakeOrdersCount');
+
+    // demo stat counter (faqat ko'rinish uchun)
+    let demoOrderCounter = 0;
+    function updateFakeCounter() {
+      fakeOrdersSpan.innerText = demoOrderCounter;
+    }
+
+    // har bir servis uchun konfiguratsiya
+    const serviceConfig = {
+      followers: {
+        label: '📱 Instagram username (akkaunt)',
+        placeholder: 'Masalan: @sonic_uz yoki sonic_uz',
+        hint: 'Haqiqiy username yoki @ bilan kiriting',
+        min: 50,
+        max: 12000,
+        default: 500,
+        successMsgTemplate: (target, qty) => `${qty} ta yangi obunachi "${target}" akkauntiga yo‘naltirilmoqda.`,
+        finalMsg: (orderId, target, qty) => `✅ Buyurtma qabul qilindi! ${qty} ta follower 2-48 soat ichida qo‘shiladi. (Demo rejim)`
+      },
+      likes: {
+        label: '🔗 Instagram post URLsi',
+        placeholder: 'https://www.instagram.com/p/Cx.../',
+        hint: 'Post havolasini to‘liq joylashtiring',
+        min: 20,
+        max: 5000,
+        default: 300,
+        successMsgTemplate: (target, qty) => `${qty} ta like postga yo‘naltirilmoqda: ${target.substring(0, 50)}...`,
+        finalMsg: (orderId, target, qty) => `❤️ ${qty} ta like tez orada ko‘rinadi! Buyurtma ID: ${orderId}`
+      },
+      views: {
+        label: '👁️ Post yoki Story URL',
+        placeholder: 'Instagram post yoki story havolasi',
+        hint: 'Ko‘rishlar sonini oshirish uchun havola',
+        min: 100,
+        max: 25000,
+        default: 1000,
+        successMsgTemplate: (target, qty) => `${qty} ta ko‘rish so‘rovi yuborildi (${target.substring(0, 40)}).`,
+        finalMsg: (orderId, target, qty) => `👀 ${qty} ta real ko‘rish simulyatsiyasi boshlandi. Jarayon 24 soat. ID: ${orderId}`
+      }
+    };
+
+    // hozirgi servisga mos sozlamalarni qo'llash
+    function updateUIByService() {
+      const service = serviceSelect.value;
+      const cfg = serviceConfig[service];
+      if (!cfg) return;
+
+      // label va placeholder, hint o'zgartirish
+      targetLabel.innerHTML = `<i class="fab fa-instagram"></i> ${cfg.label}`;
+      targetInput.placeholder = cfg.placeholder;
+      targetHint.innerText = cfg.hint;
+
+      // min va max miqdor
+      quantityInput.min = cfg.min;
+      quantityInput.max = cfg.max;
+      let currentVal = parseInt(quantityInput.value, 10);
+      if (isNaN(currentVal)) currentVal = cfg.default;
+      if (currentVal < cfg.min) currentVal = cfg.min;
+      if (currentVal > cfg.max) currentVal = cfg.max;
+      quantityInput.value = currentVal;
+      quantityHint.innerText = `Min ${cfg.min} | Maks ${cfg.max} (${service === 'followers' ? 'obunachilar' : (service === 'likes' ? 'layklar' : 'ko‘rishlar')})`;
+    }
+
+    // validatsiya (target, quantity)
+    function validateInputs(service, targetValue, quantity) {
+      if (!targetValue || targetValue.trim() === "") {
+        showTemporaryError("❗ Iltimos, Instagram username yoki havolani kiriting.");
+        return false;
+      }
+      if (service === 'followers') {
+        // username uchun oddiy tekshiruv: @ yoki harf/raqam/boshqa belgi bo'lishi mumkin
+        let cleaned = targetValue.trim().replace(/^@/, '');
+        if (cleaned.length < 2) {
+          showTemporaryError("Username kamida 2 ta belgidan iborat bo‘lishi kerak.");
+          return false;
+        }
+        if (cleaned.includes(' ')) {
+          showTemporaryError("Username ichida bo‘sh joy bo‘lishi mumkin emas.");
+          return false;
+        }
+      } else {
+        // likes va views: havola tekshiruvi (instagram post yoki story link borligi)
+        let url = targetValue.trim();
+        if (!url.includes('instagram.com') && !url.includes('instagr.am')) {
+          showTemporaryError("Iltimos, to‘g‘ri Instagram post havolasini kiriting (instagram.com/p/... yoki /reel/...)");
+          return false;
+        }
+        if (!url.startsWith('http')) {
+          showTemporaryError("Havola https:// bilan boshlanishi kerak.");
+          return false;
+        }
+      }
+
+      if (isNaN(quantity) || quantity < serviceConfig[service].min || quantity > serviceConfig[service].max) {
+        showTemporaryError(`Miqdor ${serviceConfig[service].min} dan ${serviceConfig[service].max} gacha bo‘lishi kerak.`);
+        return false;
+      }
+      return true;
+    }
+
+    // xato xabari (toast usuli) 3 sekund
+    let errorTimeout = null;
+    function showTemporaryError(message) {
+      if (errorTimeout) clearTimeout(errorTimeout);
+      const oldResult = resultArea.style.display === 'block';
+      if (!oldResult) {
+        resultArea.style.display = 'block';
+      }
+      orderDetailsSpan.innerHTML = `<div style="color:#ff8a9f;"><i class="fas fa-circle-exclamation"></i> ${message}</div>`;
+      if (!oldResult) {
+        errorTimeout = setTimeout(() => {
+          if (resultArea.style.display === 'block' && orderDetailsSpan.innerHTML.includes('circle-exclamation')) {
+            resultArea.style.display = 'none';
+          }
+          errorTimeout = null;
+        }, 3500);
+      } else {
+        // agar already visible, 3.5 sekund keyin tozalab qo'yish (agar xato bo'lsa)
+        errorTimeout = setTimeout(() => {
+          if (orderDetailsSpan.innerHTML.includes('circle-exclamation')) {
+            resultArea.style.display = 'none';
+          }
+          errorTimeout = null;
+        }, 3500);
+      }
+    }
+
+    // Asosiy nakrutka simulyatsiyasi (C++ o‘xshash mantiq bilan: async ishlov berish)
+    async function startBoost(service, target, quantity) {
+      // random order ID (C++ da UUID o‘rniga)
+      const orderId = "IGX-" + Math.random().toString(36).substring(2, 10).toUpperCase() + Date.now().toString().slice(-6);
+      const cfg = serviceConfig[service];
+      
+      // birinchi "qabul qilindi" interfeys
+      resultArea.style.display = 'block';
+      orderDetailsSpan.innerHTML = `
+        <div class="order-id"><i class="fas fa-spinner fa-pulse"></i> Buyurtma shakllantirilmoqda...</div>
+        <div class="status-msg">🔁 Server bilan bog‘lanish (C++ core ishlovchi backend simulyatsiyasi)</div>
+        <div class="spinner" style="margin-top: 8px;"></div>
+      `;
+      
+      // delay - real tajriba uchun (1.5-2.5sek)
+      await new Promise(resolve => setTimeout(resolve, 1800));
+      
+      // ikkinchi bosqich: tekshiruv va tasdiqlash
+      orderDetailsSpan.innerHTML = `
+        <div class="order-id"><i class="fas fa-chart-simple"></i> Tekshiruv: ${cfg.successMsgTemplate(target, quantity)}</div>
+        <div class="status-msg">⚙️ Distributor tarmog‘iga yuborilmoqda...</div>
+      `;
+      
+      await new Promise(resolve => setTimeout(resolve, 1200));
+      
+      // Yakuniy muvaffaqiyatli xabar (3 soniyadan keyin to'liq)
+      const finalMessage = cfg.finalMsg(orderId, target, quantity);
+      const extraNote = (service === 'followers') ? "📈 Sifatli obunachilar | tezkor start" : 
+                        (service === 'likes' ? "🎯 Aktiv like tarmog‘i" : "📊 Ko‘rishlar real vaqtda hisoblanadi");
+      
+      orderDetailsSpan.innerHTML = `
+        <div class="order-id"><i class="fas fa-check-circle" style="color:#4cd964;"></i> ${orderId}</div>
+        <div class="status-msg">${finalMessage}</div>
+        <div class="status-msg" style="font-size:0.75rem; margin-top: 5px;"><i class="fas fa-microchip"></i> ${extraNote} (C++ optimisation benchmark)</div>
+        <div class="status-msg" style="font-size:0.7rem; margin-top: 6px;">📅 Taxminiy tugash: ${new Date(Date.now() + 86400000).toLocaleString()}</div>
+      `;
+      
+      // demo counter oshirib boramiz
+      demoOrderCounter++;
+      updateFakeCounter();
+      
+      // log uchun konsolga chiqarish
+      console.log(`[DEMO] Boost yuborildi | Service: ${service} | Target: ${target} | Qty: ${quantity} | Order: ${orderId}`);
+    }
+    
+    // form submit ishlovchisi
+    async function handleSubmit(e) {
+      e.preventDefault();
+      
+      // agar tugab bo'lmaydigan ish yuritayotgan bo'lsa, oldingi tugmani bloklaymiz
+      if (submitBtn.disabled) return;
+      
+      const service = serviceSelect.value;
+      let targetRaw = targetInput.value.trim();
+      const quantity = parseInt(quantityInput.value, 10);
+      
+      // validatsiya
+      if (!validateInputs(service, targetRaw, quantity)) {
+        return;
+      }
+      
+      // agar followers bo'lsa @ dan tozalash lekin chiroyli ko'rinish uchun saqlaymiz
+      let displayTarget = targetRaw;
+      if (service === 'followers') {
+        displayTarget = targetRaw.replace(/^@/, '');
+      }
+      
+      // tugmani o'chirish
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Jarayon bajarilmoqda...';
+      
+      try {
+        await startBoost(service, displayTarget, quantity);
+      } catch (err) {
+        console.error(err);
+        orderDetailsSpan.innerHTML = `<div style="color: #ff8080;"><i class="fas fa-times-circle"></i> Xatolik yuz berdi. Qayta urinib ko‘ring.</div>`;
+        resultArea.style.display = 'block';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-bolt"></i> NAKRUTKA BOSHLASH';
+      }
+    }
+    
+    // Dinamik o'zgarishlar: servis o'zgartirilganda UI yangilanadi
+    serviceSelect.addEventListener('change', () => {
+      updateUIByService();
+      // resultani tozalash, yangilash
+      if (resultArea.style.display === 'block') {
+        resultArea.style.display = 'none';
+      }
+    });
+    
+    // quantity o'zgarishini chegaralash
+    quantityInput.addEventListener('change', function() {
+      let service = serviceSelect.value;
+      let cfg = serviceConfig[service];
+      let val = parseInt(this.value, 10);
+      if (isNaN(val)) val = cfg.default;
+      if (val < cfg.min) this.value = cfg.min;
+      if (val > cfg.max) this.value = cfg.max;
+    });
+    
+    targetInput.addEventListener('input', function() {
+      if (resultArea.style.display === 'block' && !orderDetailsSpan.innerHTML.includes('circle-exclamation')) {
+        // agar xato bo'lmasa va oldingi natija ko'rsatilgan bo'lsa, uni tozalash yaxshi emas, lekin xohishga qarab
+        // faqat xabarni o'chirmaslik ma'qul, ammo yangi boshlanishda yangilanadi
+      }
+    });
+    
+    // forma eventi
+    const form = document.getElementById('boostForm');
+    form.addEventListener('submit', handleSubmit);
+    
+    // boshlang'ich UI sozlash
+    updateUIByService();
+    
+    // demo counter initial
+    updateFakeCounter();
+    
+    // C++ mavzusini aks ettiruvchi chiroyli xabar: konsolga yozamiz
+    console.log("✅ Sayt yuklandi | C++ backend bilan ishlash imkoniyati mavjud (WebAssembly yoki REST API orqali)");
+    
+    // Tepadagi dinamic labelda qo'shimcha effekt: placeholder misol
+    // hech qanday real API chaqiruvlari yo'q, faqat frontend demo.
+  })();
+</script>
+</body>
+</html>
